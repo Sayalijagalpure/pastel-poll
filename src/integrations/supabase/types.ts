@@ -1,10 +1,10 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export interface Admin {
+  id: string;
+  email: string;
+  role: 'admin';
+  created_at?: string;
+  updated_at?: string;
+}
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options

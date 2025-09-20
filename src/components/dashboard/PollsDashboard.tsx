@@ -4,8 +4,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { LogOut, Plus, Clock, Users, CheckCircle } from 'lucide-react';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { LogOut, Plus, Clock, Users, CheckCircle, Filter } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 interface Poll {
@@ -21,70 +21,153 @@ interface Poll {
 }
 
 export const PollsDashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [polls, setPolls] = useState<Poll[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedGenre, setSelectedGenre] = useState<string>('');
 
-  if (!user) {
+  const genreFilter = searchParams.get('genre');
+
+  // Show loading while auth state is being determined
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Only redirect if we're sure the user is not authenticated
+  if (!user && !authLoading) {
     return <Navigate to="/auth" replace />;
   }
 
+  // Don't render anything if we don't have a user yet
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+          <p className="text-muted-foreground">Loading user data...</p>
+        </div>
+      </div>
+    );
+  }
+
   useEffect(() => {
+    if (genreFilter) {
+      setSelectedGenre(decodeURIComponent(genreFilter));
+    } else {
+      setSelectedGenre('');
+    }
     fetchPolls();
-  }, [user]);
+  }, [user, genreFilter]);
 
   const fetchPolls = async () => {
     try {
-      // Fetch active polls
-      const { data: pollsData, error: pollsError } = await supabase
-        .from('polls')
-        .select('*')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
+      // Check if we're using mock data or Supabase
+      const storedPolls = localStorage.getItem('allPolls');
+      const useMockData = storedPolls !== null;
 
-      if (pollsError) {
-        toast({
-          title: "Error",
-          description: "Failed to load polls",
-          variant: "destructive"
-        });
-        return;
+      if (useMockData) {
+        // Use mock data system
+        const mockPollsData = JSON.parse(storedPolls);
+        let filteredPolls = mockPollsData;
+
+        if (genreFilter) {
+          filteredPolls = mockPollsData.filter((poll: any) =>
+            poll.genre === decodeURIComponent(genreFilter)
+          );
+        }
+
+        // Enrich mock polls with vote data
+        const enrichedPolls = await Promise.all(
+          filteredPolls.map(async (poll: any) => {
+            const pollVotes = JSON.parse(localStorage.getItem('userVotes') || '[]');
+            const userVote = pollVotes.find((vote: any) =>
+              vote.poll_id === poll.id && vote.user_email === user?.email
+            );
+            const voteCount = pollVotes.filter((vote: any) => vote.poll_id === poll.id).length;
+
+            return {
+              ...poll,
+              vote_count: voteCount,
+              user_voted: !!userVote
+            };
+          })
+        );
+
+        setPolls(enrichedPolls);
+      } else {
+        // Use Supabase
+        let query = supabase
+          .from('polls')
+          .select('*')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false });
+
+        // Note: Supabase schema doesn't have genre field yet, so filtering by genre won't work
+        // This would need to be added to the database schema
+
+        const { data: pollsData, error: pollsError } = await query;
+
+        if (pollsError) {
+          console.error('Error fetching polls:', pollsError);
+          setPolls([]);
+          setLoading(false);
+          return;
+        }
+
+        if (!pollsData || pollsData.length === 0) {
+          setPolls([]);
+          setLoading(false);
+          return;
+        }
+
+        // For each poll, check if user has voted and get vote count
+        const enrichedPolls = await Promise.all(
+          pollsData.map(async (poll) => {
+            try {
+              // Check if user voted
+              const { data: userVote } = await supabase
+                .from('votes')
+                .select('id')
+                .eq('poll_id', poll.id)
+                .eq('user_id', user?.id)
+                .single();
+
+              // Get vote count
+              const { count } = await supabase
+                .from('votes')
+                .select('*', { count: 'exact', head: true })
+                .eq('poll_id', poll.id);
+
+              return {
+                ...poll,
+                vote_count: count || 0,
+                user_voted: !!userVote
+              };
+            } catch (error) {
+              // If there's an error with individual poll, just return the poll without vote data
+              return {
+                ...poll,
+                vote_count: 0,
+                user_voted: false
+              };
+            }
+          })
+        );
+
+        setPolls(enrichedPolls);
       }
-
-      // For each poll, check if user has voted and get vote count
-      const enrichedPolls = await Promise.all(
-        (pollsData || []).map(async (poll) => {
-          // Check if user voted
-          const { data: userVote } = await supabase
-            .from('votes')
-            .select('id')
-            .eq('poll_id', poll.id)
-            .eq('user_id', user.id)
-            .single();
-
-          // Get vote count
-          const { count } = await supabase
-            .from('votes')
-            .select('*', { count: 'exact', head: true })
-            .eq('poll_id', poll.id);
-
-          return {
-            ...poll,
-            vote_count: count || 0,
-            user_voted: !!userVote
-          };
-        })
-      );
-
-      setPolls(enrichedPolls);
     } catch (error) {
       console.error('Error fetching polls:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load polls",
-        variant: "destructive"
-      });
+      setPolls([]);
     } finally {
       setLoading(false);
     }
@@ -121,14 +204,32 @@ export const PollsDashboard = () => {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-bold text-foreground">SecureVote Dashboard</h1>
+            {selectedGenre && (
+              <Badge variant="secondary" className="text-xs">
+                <Filter className="w-3 h-3 mr-1" />
+                {selectedGenre}
+              </Badge>
+            )}
             <Badge variant="secondary" className="text-xs">
-              {polls.length} Active Polls
+              {polls.length} {selectedGenre ? 'Filtered' : 'Active'} Polls
             </Badge>
           </div>
           <div className="flex items-center space-x-4">
             <span className="text-sm text-muted-foreground">
               Welcome, {user.email}
             </span>
+            {selectedGenre && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSearchParams({});
+                  setSelectedGenre('');
+                }}
+              >
+                Clear Filter
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"

@@ -5,17 +5,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { HelpSidebar } from '@/components/help/HelpSidebar';
-import { Vote, Shield, Users, BarChart3, ArrowRight, CheckCircle } from 'lucide-react';
+import { Vote, Shield, Users, BarChart3, ArrowRight, CheckCircle, Globe, Heart, GraduationCap, Scale, Cpu, Briefcase } from 'lucide-react';
 
 const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!loading && user) {
-      navigate('/dashboard');
-    }
-  }, [user, loading, navigate]);
+  // Remove automatic redirect - let users navigate freely
 
   if (loading) {
     return (
@@ -67,6 +63,90 @@ const Index = () => {
               View Polls
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Genre Categories Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-foreground mb-4">Explore by Category</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Discover polls organized by topics that matter most to our community
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/dashboard?genre=Environment%20%26%20Climate')}>
+            <CardHeader>
+              <Globe className="w-12 h-12 mx-auto text-green-600 mb-4" />
+              <CardTitle className="text-lg">Environment & Climate</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Sustainability, climate change, environmental policies, and green initiatives
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/dashboard?genre=Healthcare%20%26%20Wellness')}>
+            <CardHeader>
+              <Heart className="w-12 h-12 mx-auto text-red-600 mb-4" />
+              <CardTitle className="text-lg">Healthcare & Wellness</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Health policies, mental health, wellness practices, and medical innovations
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/dashboard?genre=Education%20%26%20Learning')}>
+            <CardHeader>
+              <GraduationCap className="w-12 h-12 mx-auto text-blue-600 mb-4" />
+              <CardTitle className="text-lg">Education & Learning</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Educational policies, learning methods, skill development, and knowledge sharing
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/dashboard?genre=Social%20Issues%20%26%20Equality')}>
+            <CardHeader>
+              <Scale className="w-12 h-12 mx-auto text-purple-600 mb-4" />
+              <CardTitle className="text-lg">Social Issues & Equality</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Social justice, equality, diversity, inclusion, and community development
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/dashboard?genre=Technology%20%26%20Innovation')}>
+            <CardHeader>
+              <Cpu className="w-12 h-12 mx-auto text-cyan-600 mb-4" />
+              <CardTitle className="text-lg">Technology & Innovation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Tech trends, digital transformation, AI, software development, and innovation
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/dashboard?genre=Economy%20%26%20Work')}>
+            <CardHeader>
+              <Briefcase className="w-12 h-12 mx-auto text-orange-600 mb-4" />
+              <CardTitle className="text-lg">Economy & Work</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Work culture, economic policies, career development, and workplace dynamics
+              </CardDescription>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
