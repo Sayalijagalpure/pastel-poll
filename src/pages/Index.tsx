@@ -82,9 +82,16 @@ const Index = () => {
               <CardTitle className="text-lg">Environment & Climate</CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription>
+              <CardDescription className="mb-3">
                 Sustainability, climate change, environmental policies, and green initiatives
               </CardDescription>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div className="font-medium text-foreground">Featured Polls:</div>
+                <div>• Most Effective Climate Action</div>
+                <div>• Renewable Energy Priority</div>
+                <div>• Sustainable Transportation</div>
+                <div className="text-green-600 font-medium mt-2">3 Active Polls</div>
+              </div>
             </CardContent>
           </Card>
 
@@ -94,9 +101,16 @@ const Index = () => {
               <CardTitle className="text-lg">Healthcare & Wellness</CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription>
+              <CardDescription className="mb-3">
                 Health policies, mental health, wellness practices, and medical innovations
               </CardDescription>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div className="font-medium text-foreground">Featured Polls:</div>
+                <div>• Mental Health in Workplace</div>
+                <div>• Healthcare System Preference</div>
+                <div>• Workplace Wellness Programs</div>
+                <div className="text-red-600 font-medium mt-2">3 Active Polls</div>
+              </div>
             </CardContent>
           </Card>
 
@@ -106,9 +120,15 @@ const Index = () => {
               <CardTitle className="text-lg">Education & Learning</CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription>
+              <CardDescription className="mb-3">
                 Educational policies, learning methods, skill development, and knowledge sharing
               </CardDescription>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div className="font-medium text-foreground">Featured Polls:</div>
+                <div>• Most Important Skill for Future</div>
+                <div>• Online vs Traditional Education</div>
+                <div className="text-blue-600 font-medium mt-2">2 Active Polls</div>
+              </div>
             </CardContent>
           </Card>
 
@@ -118,9 +138,15 @@ const Index = () => {
               <CardTitle className="text-lg">Social Issues & Equality</CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription>
+              <CardDescription className="mb-3">
                 Social justice, equality, diversity, inclusion, and community development
               </CardDescription>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div className="font-medium text-foreground">Featured Polls:</div>
+                <div>• Gender Pay Gap Solutions</div>
+                <div>• Social Media Regulation</div>
+                <div className="text-purple-600 font-medium mt-2">2 Active Polls</div>
+              </div>
             </CardContent>
           </Card>
 
@@ -130,9 +156,16 @@ const Index = () => {
               <CardTitle className="text-lg">Technology & Innovation</CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription>
+              <CardDescription className="mb-3">
                 Tech trends, digital transformation, AI, software development, and innovation
               </CardDescription>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div className="font-medium text-foreground">Featured Polls:</div>
+                <div>• AI Impact on Jobs</div>
+                <div>• Cryptocurrency Future</div>
+                <div>• Best Programming Language</div>
+                <div className="text-cyan-600 font-medium mt-2">4 Active Polls</div>
+              </div>
             </CardContent>
           </Card>
 
@@ -142,9 +175,16 @@ const Index = () => {
               <CardTitle className="text-lg">Economy & Work</CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription>
+              <CardDescription className="mb-3">
                 Work culture, economic policies, career development, and workplace dynamics
               </CardDescription>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div className="font-medium text-foreground">Featured Polls:</div>
+                <div>• Four-Day Work Week</div>
+                <div>• Remote Work Productivity</div>
+                <div>• Remote Work Preference</div>
+                <div className="text-orange-600 font-medium mt-2">4 Active Polls</div>
+              </div>
             </CardContent>
           </Card>
         </div>
