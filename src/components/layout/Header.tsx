@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
@@ -20,6 +20,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/hooks/useAuth';
 import { Vote, Menu, User, LogOut, Settings, BarChart3, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export const Header = () => {
   const { user, signOut } = useAuth();
@@ -84,6 +85,7 @@ export const Header = () => {
 
           {/* User Actions */}
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -142,6 +144,9 @@ export const Header = () => {
                       <Vote className="w-5 h-5 text-primary-foreground" />
                     </div>
                     <span className="font-bold text-xl">SecureVote</span>
+                    <div className="ml-auto">
+                      <ThemeToggle />
+                    </div>
                   </div>
                   
                   {navigationItems.map((item) => {
