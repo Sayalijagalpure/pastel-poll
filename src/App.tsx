@@ -12,6 +12,7 @@ import { RoleSelection } from "./components/auth/RoleSelection";
 import { SimpleDashboard } from "./components/dashboard/SimpleDashboard";
 import { PollDetail } from "./components/poll/PollDetail";
 import { SimpleAdminPanel } from "./components/admin/SimpleAdminPanel";
+import { AuthCallbackHandler } from "./components/auth/AuthCallbackHandler";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <AuthCallbackHandler />
         <Toaster />
         <Sonner />
         <BrowserRouter>

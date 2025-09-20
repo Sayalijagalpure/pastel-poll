@@ -230,14 +230,16 @@ export const PollsDashboard = () => {
                 Clear Filter
               </Button>
             )}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/admin')}
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Create Poll
-            </Button>
+            {user.role === 'admin' && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/admin')}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Poll
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={signOut}>
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
@@ -257,10 +259,12 @@ export const PollsDashboard = () => {
             <p className="text-muted-foreground max-w-md mx-auto">
               There are no active polls at the moment. Check back later or create your own!
             </p>
-            <Button onClick={() => navigate('/admin')}>
-              <Plus className="w-4 h-4 mr-2" />
-              Create First Poll
-            </Button>
+            {user.role === 'admin' && (
+              <Button onClick={() => navigate('/admin')}>
+                <Plus className="w-4 h-4 mr-2" />
+                Create First Poll
+              </Button>
+            )}
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

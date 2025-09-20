@@ -11,6 +11,13 @@ import { ArrowLeft, Plus, Trash2, Calendar, AlertTriangle } from 'lucide-react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { addNewPoll, getAllPolls, deletePoll, Poll } from '@/data/mockPolls';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 
 export const SimpleAdminPanel = () => {
   const { user, loading: authLoading } = useAuth();
@@ -24,6 +31,7 @@ export const SimpleAdminPanel = () => {
   const [hasExpiry, setHasExpiry] = useState(false);
   const [expiryDate, setExpiryDate] = useState('');
   const [expiryTime, setExpiryTime] = useState('');
+  const [genre, setGenre] = useState<string>('Technology & Innovation');
   
   // Delete poll state
   const [polls, setPolls] = useState<Poll[]>([]);
@@ -166,7 +174,8 @@ export const SimpleAdminPanel = () => {
         options: uniqueOptions,
         expires_at: expiresAt,
         creator_email: user.email,
-        creator_role: user.role
+        creator_role: user.role,
+        genre
       });
 
       toast({
@@ -181,6 +190,7 @@ export const SimpleAdminPanel = () => {
       setHasExpiry(false);
       setExpiryDate('');
       setExpiryTime('');
+      setGenre('Technology & Innovation');
       
       // Refresh polls list
       const updatedPolls = getAllPolls();
@@ -367,6 +377,24 @@ export const SimpleAdminPanel = () => {
                 <p className="text-xs text-muted-foreground">
                   {title.length}/200 characters
                 </p>
+              </div>
+
+              {/* Genre */}
+              <div className="space-y-2">
+                <Label htmlFor="genre">Genre *</Label>
+                <Select value={genre} onValueChange={setGenre}>
+                  <SelectTrigger id="genre">
+                    <SelectValue placeholder="Select a genre" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Technology & Innovation">Technology & Innovation</SelectItem>
+                    <SelectItem value="Economy & Work">Economy & Work</SelectItem>
+                    <SelectItem value="Environment & Climate">Environment & Climate</SelectItem>
+                    <SelectItem value="Healthcare & Wellness">Healthcare & Wellness</SelectItem>
+                    <SelectItem value="Education & Learning">Education & Learning</SelectItem>
+                    <SelectItem value="Social Issues & Equality">Social Issues & Equality</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Description */}
