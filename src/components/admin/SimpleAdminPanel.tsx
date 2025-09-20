@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Plus, Trash2, Calendar, AlertTriangle } from 'lucide-react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
@@ -21,6 +22,7 @@ export const SimpleAdminPanel = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [options, setOptions] = useState(['', '']);
+  const [genre, setGenre] = useState('');
   const [hasExpiry, setHasExpiry] = useState(false);
   const [expiryDate, setExpiryDate] = useState('');
   const [expiryTime, setExpiryTime] = useState('');
@@ -117,6 +119,15 @@ export const SimpleAdminPanel = () => {
       return;
     }
 
+    if (!genre) {
+      toast({
+        title: "Validation Error",
+        description: "Please select a poll category",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const validOptions = options.filter(opt => opt.trim().length > 0);
     if (validOptions.length < 2) {
       toast({
@@ -166,7 +177,8 @@ export const SimpleAdminPanel = () => {
         options: uniqueOptions,
         expires_at: expiresAt,
         creator_email: user.email,
-        creator_role: user.role
+        creator_role: user.role,
+        genre: genre
       });
 
       toast({
@@ -178,6 +190,7 @@ export const SimpleAdminPanel = () => {
       setTitle('');
       setDescription('');
       setOptions(['', '']);
+      setGenre('');
       setHasExpiry(false);
       setExpiryDate('');
       setExpiryTime('');
@@ -369,19 +382,24 @@ export const SimpleAdminPanel = () => {
                 </p>
               </div>
 
-              {/* Description */}
+              {/* Genre Selection */}
               <div className="space-y-2">
-                <Label htmlFor="description">Description (Optional)</Label>
-                <Textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Provide additional context or details..."
-                  rows={3}
-                  maxLength={500}
-                />
+                <Label htmlFor="genre">Poll Category *</Label>
+                <Select value={genre} onValueChange={setGenre} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a category for your poll" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Environment & Climate">Environment & Climate</SelectItem>
+                    <SelectItem value="Healthcare & Wellness">Healthcare & Wellness</SelectItem>
+                    <SelectItem value="Education & Learning">Education & Learning</SelectItem>
+                    <SelectItem value="Social Issues & Equality">Social Issues & Equality</SelectItem>
+                    <SelectItem value="Technology & Innovation">Technology & Innovation</SelectItem>
+                    <SelectItem value="Economy & Work">Economy & Work</SelectItem>
+                  </SelectContent>
+                </Select>
                 <p className="text-xs text-muted-foreground">
-                  {description.length}/500 characters
+                  Choose the most appropriate category for your poll topic
                 </p>
               </div>
 
