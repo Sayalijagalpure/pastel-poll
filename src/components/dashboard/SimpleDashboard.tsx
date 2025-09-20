@@ -188,14 +188,14 @@ export const SimpleDashboard = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Select
-                  value={selectedGenre ?? ''}
-                  onValueChange={(v) => setSelectedGenre(v || null)}
+                  value={selectedGenre ?? 'ALL'}
+                  onValueChange={(v) => setSelectedGenre(v === 'ALL' ? null : v)}
                 >
                   <SelectTrigger className="w-[240px]" aria-label="Filter by genre">
                     <SelectValue placeholder="All Genres" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Genres</SelectItem>
+                    <SelectItem value="ALL">All Genres</SelectItem>
                     {availableGenres.map((g) => (
                       <SelectItem key={g} value={g}>
                         {g}
