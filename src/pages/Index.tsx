@@ -1,18 +1,210 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/hooks/useAuth';
+import { HelpSidebar } from '@/components/help/HelpSidebar';
+import { Vote, Shield, Users, BarChart3, ArrowRight, CheckCircle } from 'lucide-react';
 
 const Index = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="text-center max-w-md">
-        <div className="mb-6 text-6xl">🗳️</div>
-        <h1 className="mb-4 text-4xl font-bold text-foreground">Secure Voting System</h1>
-        <p className="text-xl text-muted-foreground mb-6">
-          Professional voting platform with authentication and real-time results
-        </p>
-        <div className="text-sm text-muted-foreground">
-          Project loaded successfully! Ready to connect Supabase.
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/dashboard');
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-16 text-center space-y-8">
+        <div className="space-y-6">
+          <div className="mx-auto w-20 h-20 bg-primary rounded-full flex items-center justify-center">
+            <Vote className="w-10 h-10 text-primary-foreground" />
+          </div>
+          
+          <div className="space-y-4">
+            <Badge variant="secondary" className="text-sm px-4 py-2">
+              Professional Voting Platform
+            </Badge>
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground">
+              SecureVote
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
+              Anonymous, secure, and transparent voting platform with real-time results
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button 
+              size="lg" 
+              onClick={() => navigate('/auth')}
+              className="px-8 py-6 text-lg"
+            >
+              Get Started
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => navigate('/dashboard')}
+              className="px-8 py-6 text-lg"
+            >
+              View Polls
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-foreground mb-4">Why Choose SecureVote?</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Built with security, privacy, and user experience at its core
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="text-center">
+            <CardHeader>
+              <Shield className="w-12 h-12 mx-auto text-primary" />
+              <CardTitle className="text-lg">Secure & Anonymous</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Your vote choices are completely anonymous while preventing duplicate voting
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardHeader>
+              <BarChart3 className="w-12 h-12 mx-auto text-primary" />
+              <CardTitle className="text-lg">Real-time Results</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Watch results update instantly with beautiful charts and visualizations
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardHeader>
+              <Users className="w-12 h-12 mx-auto text-primary" />
+              <CardTitle className="text-lg">Easy to Use</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Intuitive interface makes voting simple for everyone in your community
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardHeader>
+              <CheckCircle className="w-12 h-12 mx-auto text-primary" />
+              <CardTitle className="text-lg">Transparent</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Open voting process with clear results and audit trails for trust
+              </CardDescription>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* How it Works + Help */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+          {/* How it Works */}
+          <div className="space-y-8">
+            <div className="text-center lg:text-left">
+              <h2 className="text-3xl font-bold text-foreground mb-4">How It Works</h2>
+              <p className="text-muted-foreground">
+                Voting made simple in three easy steps
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary-foreground font-bold text-sm">1</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">Sign Up & Sign In</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Create your secure account with just an email and password
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary-foreground font-bold text-sm">2</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">Browse & Vote</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Explore active polls and cast your anonymous vote on topics that matter
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary-foreground font-bold text-sm">3</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">View Results</h3>
+                  <p className="text-muted-foreground text-sm">
+                    See real-time results with interactive charts and detailed analytics
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Help Sidebar */}
+          <div className="flex justify-center lg:justify-end">
+            <HelpSidebar />
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-accent/20 border-t">
+        <div className="container mx-auto px-4 py-16 text-center space-y-6">
+          <h2 className="text-3xl font-bold text-foreground">Ready to Make Your Voice Heard?</h2>
+          <p className="text-muted-foreground max-w-xl mx-auto">
+            Join thousands of users already participating in secure, anonymous voting
+          </p>
+          <Button 
+            size="lg" 
+            onClick={() => navigate('/auth')}
+            className="px-8 py-6 text-lg"
+          >
+            Start Voting Now
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
+        </div>
+      </section>
     </div>
   );
 };

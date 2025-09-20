@@ -57,6 +57,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        vote: {
+          success: "hsl(var(--vote-success))",
+          pending: "hsl(var(--vote-pending))",
+          expired: "hsl(var(--vote-expired))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
