@@ -1,10 +1,10 @@
-export interface Admin {
-  id: string;
-  email: string;
-  role: 'admin';
-  created_at?: string;
-  updated_at?: string;
-}
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
@@ -14,94 +14,258 @@ export type Database = {
   }
   public: {
     Tables: {
-      polls: {
+      audit_logs: {
         Row: {
+          action: string | null
+          actor_id: string | null
           created_at: string | null
-          created_by: string | null
+          details: Json | null
+          id: number
+        }
+        Insert: {
+          action?: string | null
+          actor_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          id?: number
+        }
+        Update: {
+          action?: string | null
+          actor_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      genres: {
+        Row: {
           description: string | null
-          expires_at: string | null
-          id: string
-          is_active: boolean | null
-          options: string[]
+          id: number
+          slug: string | null
           title: string
         }
         Insert: {
-          created_at?: string | null
-          created_by?: string | null
           description?: string | null
-          expires_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          options: string[]
+          id?: number
+          slug?: string | null
           title: string
         }
         Update: {
-          created_at?: string | null
-          created_by?: string | null
           description?: string | null
-          expires_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          options?: string[]
+          id?: number
+          slug?: string | null
           title?: string
         }
         Relationships: []
       }
+      options: {
+        Row: {
+          id: number
+          label: string
+          meta: Json | null
+          poll_id: number | null
+          sort_order: number | null
+        }
+        Insert: {
+          id?: number
+          label: string
+          meta?: Json | null
+          poll_id?: number | null
+          sort_order?: number | null
+        }
+        Update: {
+          id?: number
+          label?: string
+          meta?: Json | null
+          poll_id?: number | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "options_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      polls: {
+        Row: {
+          allow_revote: boolean | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          ends_at: string | null
+          genre_id: number | null
+          id: number
+          image_url: string | null
+          is_published: boolean | null
+          starts_at: string | null
+          title: string
+        }
+        Insert: {
+          allow_revote?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          genre_id?: number | null
+          id?: number
+          image_url?: string | null
+          is_published?: boolean | null
+          starts_at?: string | null
+          title: string
+        }
+        Update: {
+          allow_revote?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          genre_id?: number | null
+          id?: number
+          image_url?: string | null
+          is_published?: boolean | null
+          starts_at?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "polls_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "polls_genre_id_fkey"
+            columns: ["genre_id"]
+            isOneToOne: false
+            referencedRelation: "genres"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
-          avatar_url: string | null
           created_at: string | null
           full_name: string | null
           id: string
           role: string | null
-          username: string | null
+          theme: string | null
         }
         Insert: {
-          avatar_url?: string | null
           created_at?: string | null
           full_name?: string | null
           id: string
           role?: string | null
-          username?: string | null
+          theme?: string | null
         }
         Update: {
-          avatar_url?: string | null
           created_at?: string | null
           full_name?: string | null
           id?: string
           role?: string | null
-          username?: string | null
+          theme?: string | null
         }
         Relationships: []
+      }
+      vote_tokens: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: number
+          issued_to: string | null
+          poll_id: number | null
+          token: string
+          used: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: number
+          issued_to?: string | null
+          poll_id?: number | null
+          token: string
+          used?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: number
+          issued_to?: string | null
+          poll_id?: number | null
+          token?: string
+          used?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vote_tokens_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "polls"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       votes: {
         Row: {
           created_at: string | null
-          id: string
-          option: string
-          poll_id: string
-          user_id: string
+          id: number
+          ip_addr: string | null
+          option_id: number | null
+          poll_id: number | null
+          ua: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
-          id?: string
-          option: string
-          poll_id: string
-          user_id: string
+          id?: number
+          ip_addr?: string | null
+          option_id?: number | null
+          poll_id?: number | null
+          ua?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
-          id?: string
-          option?: string
-          poll_id?: string
-          user_id?: string
+          id?: number
+          ip_addr?: string | null
+          option_id?: number | null
+          poll_id?: number | null
+          ua?: string | null
+          user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "votes_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "options"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "votes_poll_id_fkey"
             columns: ["poll_id"]
             isOneToOne: false
             referencedRelation: "polls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "votes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -111,7 +275,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
